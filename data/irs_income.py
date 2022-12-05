@@ -52,7 +52,7 @@ class IRSIncome(DataSource):
         income_df['agi_stub_lower_bound'] = income_df['agi_stub'].replace(cls.AGI_STUB_LOWER_BOUNDS)
         income_df['agi_stub_desc'] = income_df['agi_stub'].replace(cls.AGI_STUB_DESCRIPTION)
         zip_to_fips = ZipToFips().process()
-        income_df = income_df.merge(zip_to_fips, left_on='zipcode', right_index=True, how='left')
+        income_df_with_fips = income_df.merge(zip_to_fips, left_on='zipcode', right_index=True, how='left')
         fips_county_info = FipsCountyInfo().process()
-        income_df = income_df.merge(fips_county_info, left_on='county', right_index=True, how='left')
-        return income_df
+        income_df_with_fips_and_info = income_df_with_fips.merge(fips_county_info, left_on='county', right_index=True, how='left')
+        return income_df_with_fips_and_info
