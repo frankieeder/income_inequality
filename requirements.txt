@@ -1,3 +1,4 @@
 plotly
 streamlit
 extra-streamlit-components
+lxml
