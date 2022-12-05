@@ -7,8 +7,8 @@ from streamlit_common import zip_map
 st.set_page_config(page_title="By County", page_icon="📈", layout='wide')
 
 page_names_to_funcs = {
-    "Zip Code Info": zip_info,
     "County Map": county_map,
+    "Zip Code Info": zip_info,
     #"Zip Map": zip_map,
 }
 

@@ -51,6 +51,7 @@ def county_map():
         label="Metric",
         options=list(IRSIncomeByCounty.METRIC_NAMES.keys()),
         format_func=lambda o: IRSIncomeByCounty.METRIC_NAMES[o],
+        index=3,
     )
     fig = px.choropleth(
         county_sums,
@@ -62,7 +63,11 @@ def county_map():
         # range_color=(0, 12),
         scope="usa",
         labels={metric: IRSIncomeByCounty.METRIC_NAMES[metric]},
-        height=500
+        height=500,
+        hover_data={
+            'county_name': True,
+            'state_name': True,
+        }
     )
     st.plotly_chart(fig, use_container_width=True)
 
