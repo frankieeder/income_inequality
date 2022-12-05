@@ -2,6 +2,7 @@ import pandas as pd
 
 from .data_source import DataSource
 from .zip_to_fips import ZipToFips
+from .fips_county_info import FipsCountyInfo
 
 
 class IRSIncome(DataSource):
@@ -52,4 +53,6 @@ class IRSIncome(DataSource):
         income_df['agi_stub_desc'] = income_df['agi_stub'].replace(cls.AGI_STUB_DESCRIPTION)
         zip_to_fips = ZipToFips().process()
         income_df = income_df.merge(zip_to_fips, left_on='zipcode', right_index=True, how='left')
+        fips_county_info = FipsCountyInfo().process()
+        income_df = income_df.merge(fips_county_info, left_on='county', right_index=True, how='left')
         return income_df
