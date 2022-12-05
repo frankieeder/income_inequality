@@ -69,6 +69,6 @@ def zip_info():
     else:
         st.write(f"Zip code {zip_code} not found")
 
+
 if __name__ == "__main__":
     zip_info()
-    x = 2
