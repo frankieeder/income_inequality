@@ -5,7 +5,7 @@ import pandas as pd
 
 from pathlib import Path
 
-from data_source import DataSource
+from .data_source import DataSource
 
 
 class FipsCountyInfo(DataSource):
@@ -24,6 +24,16 @@ class FipsCountyInfo(DataSource):
         else:
             return pd.read_csv(self.LOCAL_FILE_DIR)
 
+    def clean(self, df):
+        df['FIPS'] = df['FIPS'].apply(lambda i: format(i, '05d'))
+        df = df.set_index('FIPS')
+        df = df.rename(columns={
+            'County or equivalent': 'county_name',
+            'State or equivalent': 'state_name',
+        })
+        return df
+
+
 
 if __name__ == '__main__':
-    FipsCountyInfo(get_remote=True).process().to_csv(FipsCountyInfo.LOCAL_FILE_DIR)
+    FipsCountyInfo(get_remote=True).process().to_csv(FipsCountyInfo.LOCAL_FILE_DIR, index=False)
