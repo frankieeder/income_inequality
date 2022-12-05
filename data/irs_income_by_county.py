@@ -5,6 +5,16 @@ from .irs_income_by_zip import IRSIncomeByZip
 
 
 class IRSIncomeByCounty(DataSource):
+    AGI_STUB_RANGE = range(1, 7)
+    CALCULATED_METRICS = {
+        **{f'agi_stub_{i}_N1': f'Number of Reports in AGI Stub {i}' for i in AGI_STUB_RANGE},
+        **{f'agi_stub_{i}_prop_N1': f'Proportion of Reports in AGI Stub {i}' for i in AGI_STUB_RANGE},
+    }
+    METRIC_NAMES = {
+        **IRSIncomeByZip.METRIC_NAMES,
+        **CALCULATED_METRICS,
+    }
+
     def source(self):
         return IRSIncomeByZip().process()
 

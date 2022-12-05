@@ -16,16 +16,21 @@ def get_county_geo_json():
 def county_plot():
     county_sums = get_irs_income_by_county()
     county_boundaries = get_county_geo_json()
+    metric = st.selectbox(
+        label="Metric",
+        options=list(IRSIncomeByCounty.METRIC_NAMES.keys()),
+        format_func=lambda o: IRSIncomeByCounty.METRIC_NAMES[o],
+    )
     fig = px.choropleth(
         county_sums,
         geojson=county_boundaries,
         locations=county_sums.index,
-        color='agi_stub_6_prop_N1',
+        color=metric,
         color_continuous_scale="Viridis",
         featureidkey='id',
         # range_color=(0, 12),
         scope="usa",
-        labels={'mean_income_per_return': 'Mean Income Per Return'}
+        labels={metric: IRSIncomeByCounty.METRIC_NAMES[metric]}
     )
     st.plotly_chart(fig)
 

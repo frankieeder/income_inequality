@@ -21,6 +21,16 @@ class IRSIncomeByZip(DataSource):
         5: '$100k-200k',
         6: '$200k+',
     }
+    CALCULATED_METRICS = {
+        'mean_income_per_return': 'Mean Income per Return',
+        'mean_income_per_individual': 'Mean Income per Individual',
+    }
+    METRIC_NAMES = {
+        'N1': 'Number of Tax Returns',
+        'N2': 'Number of Individuals',
+        'A00100': 'Total AGI',
+        **CALCULATED_METRICS,
+    }
 
     def source(self):
         return pd.read_csv('https://www.irs.gov/pub/irs-soi/19zpallagi.csv', dtype={'zipcode': str})
