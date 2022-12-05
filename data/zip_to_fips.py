@@ -11,9 +11,11 @@ class ZipToFips(DataSource):
         return pd.read_excel(self.LOCAL_FILE_DIR, sheet_name='SQLT0004', dtype={'zip': str, 'county': str})
 
     def clean(self, zip_to_fips_raw):
-        zip_to_fips_raw_deduped = zip_to_fips_raw\
-            .sort_values('tot_ratio', ascending=False)\
+        zip_to_fips_raw_deduped = (
+            zip_to_fips_raw
+            .sort_values('tot_ratio', ascending=False)  # Keep the one with highest tot_ratio
             .drop_duplicates(subset='zip')
+        )
         zip_to_fips = zip_to_fips_raw_deduped.set_index('zip')['county']
         return zip_to_fips
 
