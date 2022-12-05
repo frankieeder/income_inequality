@@ -2,3 +2,5 @@ plotly
 streamlit
 extra-streamlit-components
 lxml
+pandas
+openpyxl
