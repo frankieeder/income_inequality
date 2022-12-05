@@ -5,6 +5,10 @@ from .zip_to_fips import ZipToFips
 
 
 class IRSIncome(DataSource):
+    """
+    Sourced from https://www.irs.gov/statistics/soi-tax-stats-individual-income-tax-statistics-2019-zip-code-data-soi
+    """
+
     AGI_STUB_LOWER_BOUNDS = {
         1: 1,
         2: 25,
