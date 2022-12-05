@@ -1,39 +1,28 @@
 import streamlit as st
-import plotly.express as px
-from data import CountyGeoJSON
-from data import IRSIncomeByCounty
 
+st.set_page_config(
+    page_title="Hello",
+    page_icon="👋",
+)
 
-@st.cache
-def get_irs_income_by_county():
-    return IRSIncomeByCounty().process()
+st.write("# Welcome to Streamlit! 👋")
 
-@st.cache
-def get_county_geo_json():
-    return CountyGeoJSON().process()
+st.sidebar.success("Select a demo above.")
 
-
-def county_plot():
-    county_sums = get_irs_income_by_county()
-    county_boundaries = get_county_geo_json()
-    metric = st.selectbox(
-        label="Metric",
-        options=list(IRSIncomeByCounty.METRIC_NAMES.keys()),
-        format_func=lambda o: IRSIncomeByCounty.METRIC_NAMES[o],
-    )
-    fig = px.choropleth(
-        county_sums,
-        geojson=county_boundaries,
-        locations=county_sums.index,
-        color=metric,
-        color_continuous_scale="Viridis",
-        featureidkey='id',
-        # range_color=(0, 12),
-        scope="usa",
-        labels={metric: IRSIncomeByCounty.METRIC_NAMES[metric]}
-    )
-    st.plotly_chart(fig)
-
-
-if __name__ == '__main__':
-    county_plot()
+st.markdown(
+    """
+    Streamlit is an open-source app framework built specifically for
+    Machine Learning and Data Science projects.
+    **👈 Select a demo from the sidebar** to see some examples
+    of what Streamlit can do!
+    ### Want to learn more?
+    - Check out [streamlit.io](https://streamlit.io)
+    - Jump into our [documentation](https://docs.streamlit.io)
+    - Ask a question in our [community
+        forums](https://discuss.streamlit.io)
+    ### See more complex demos
+    - Use a neural net to [analyze the Udacity Self-driving Car Image
+        Dataset](https://github.com/streamlit/demo-self-driving)
+    - Explore a [New York City rideshare dataset](https://github.com/streamlit/demo-uber-nyc-pickups)
+"""
+)
