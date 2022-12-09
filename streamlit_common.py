@@ -1,5 +1,6 @@
 import streamlit as st
 import plotly.express as px
+from data import StateGeoJSON
 from data import CountyGeoJSON
 from data import ZipGeoJSON
 from data import IRSIncomeByCounty
@@ -32,6 +33,11 @@ def get_raw_zip_to_fips():
 @st.cache
 def get_fips_county_info():
     return FipsCountyInfo().process()
+
+
+@st.cache
+def get_state_geo_json():
+    return StateGeoJSON().process()
 
 
 @st.cache
@@ -140,5 +146,89 @@ def zip_map():
     st.plotly_chart(fig, use_container_width=True)
 
 
+AGI_STUB_COLS = ['agi_stub', 'agi_stub_lower_bound', 'agi_stub_desc']
+
+
+def plot_income_distribution(df, **kwargs):
+    df_by_agi_stub = df.groupby(AGI_STUB_COLS).sum()
+    df_by_agi_stub = df_by_agi_stub.reset_index()
+    df_by_agi_stub = IRSIncome.calculate_additional_income_stats(df_by_agi_stub)
+    fig = px.bar(
+        df_by_agi_stub,
+        x='agi_stub_desc',
+        y='N1',
+        hover_data={
+            'mean_income_per_return': True,
+            'mean_income_per_individual': True,
+        },
+        **kwargs,
+    )
+    return fig
+
+
+def deep_dive():
+    income_df = get_irs_income()
+    STATE_COLS = ['STATEFIPS', 'STATE', 'state_name']
+    by_state = income_df.groupby(STATE_COLS + AGI_STUB_COLS).sum()
+    by_state = by_state.reset_index()
+    by_state = IRSIncome.calculate_additional_income_stats(by_state)
+    st.write("# United States")
+    #st.write(by_state)
+    st.plotly_chart(plot_income_distribution(by_state), use_container_width=True)
+    state_boundaries = get_state_geo_json()
+
+    state_df_for_map = by_state.groupby(STATE_COLS).sum().reset_index()
+    state_df_for_map = IRSIncome.calculate_additional_income_stats(state_df_for_map)
+    fig = px.choropleth(
+        state_df_for_map,
+        geojson=state_boundaries,
+        locations='state_name',
+        color='mean_income_per_return',
+        color_continuous_scale="Viridis",
+        featureidkey='properties.NAME',
+        # range_color=(0, 12),
+        scope="usa",
+        # labels={metric: IRSIncomeByZip.METRIC_NAMES[metric]},
+        height=500
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+    state = st.selectbox(
+        label="State",
+        options=["All"] + list(by_state['state_name'].unique()),
+    )
+    if state == "All":
+        raise NotImplementedError
+    else:
+        this_state_df = income_df.loc[income_df['state_name'] == state]
+        st.write(f"# {state}")
+        st.write(this_state_df)
+        st.plotly_chart(plot_income_distribution(this_state_df), use_container_width=True)
+
+    county = st.selectbox(
+        label="County",
+        options=list(this_state_df['county_name'].unique()) + ["All"],
+    )
+    if county == "All":
+        raise NotImplementedError
+    else:
+        this_county_df = this_state_df.loc[this_state_df['county_name'] == county]
+        st.write(f"# {county}")
+        st.write(this_county_df)
+        st.plotly_chart(plot_income_distribution(this_county_df), use_container_width=True)
+
+    zip_code = st.selectbox(
+        label="County",
+        options=list(this_county_df['zipcode'].unique()) + ["All"],  # TODO: This needs to be updated to include ALL since county and zip boundaries don't align
+    )
+    if zip_code == "All":
+        raise NotImplementedError
+    else:
+        this_zip_code_df = this_county_df.loc[this_county_df['zipcode'] == zip_code]
+        st.write(f"# {zip_code}")
+        st.write(this_zip_code_df)
+        st.plotly_chart(plot_income_distribution(this_zip_code_df), use_container_width=True)
+
+
 if __name__ == "__main__":
-    zip_map()
+    deep_dive()

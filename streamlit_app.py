@@ -3,10 +3,12 @@ import streamlit as st
 from streamlit_common import zip_info
 from streamlit_common import county_map
 from streamlit_common import zip_map
+from streamlit_common import deep_dive
 
 st.set_page_config(page_title="By County", page_icon="📈", layout='wide')
 
 page_names_to_funcs = {
+    "Deep Dive": deep_dive,
     "County Map": county_map,
     "Zip Code Info": zip_info,
     #"Zip Map": zip_map,
