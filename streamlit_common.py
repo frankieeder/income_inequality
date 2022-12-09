@@ -40,7 +40,7 @@ def get_state_geo_json():
     return StateGeoJSON().process()
 
 
-@st.cache
+#@st.cache
 def get_county_geo_json():
     return CountyGeoJSON().process()
 
@@ -175,8 +175,8 @@ def deep_dive():
     st.write("# United States")
     #st.write(by_state)
     st.plotly_chart(plot_income_distribution(by_state), use_container_width=True)
-    state_boundaries = get_state_geo_json()
 
+    state_boundaries = get_state_geo_json()
     state_df_for_map = by_state.groupby(STATE_COLS).sum().reset_index()
     state_df_for_map = IRSIncome.calculate_additional_income_stats(state_df_for_map)
     fig = px.choropleth(
@@ -195,15 +195,43 @@ def deep_dive():
 
     state = st.selectbox(
         label="State",
-        options=["All"] + list(by_state['state_name'].unique()),
+        options=list(by_state['state_name'].unique()) + ["All"],
     )
     if state == "All":
         raise NotImplementedError
     else:
         this_state_df = income_df.loc[income_df['state_name'] == state]
-        st.write(f"# {state}")
         st.write(this_state_df)
+        state_id = this_state_df['STATEFIPS'].values[0]
+        st.write(state_id)
+        st.write(f"# {state}")
+        #st.write(this_state_df)
         st.plotly_chart(plot_income_distribution(this_state_df), use_container_width=True)
+
+    COUNTY_COLS = ['county', 'county_name']
+    county_boundaries = dict(get_county_geo_json())
+    county_features = [c for c in county_boundaries['features'] if int(c['properties']['STATE']) == state_id]
+    county_boundaries_filtered = dict(type='FeatureCollection', features=county_features)
+    #st.write(county_boundaries_filtered)
+    #st.write(county_boundaries)
+    county_df_for_map = this_state_df.groupby(COUNTY_COLS).sum().reset_index()
+    county_df_for_map = IRSIncome.calculate_additional_income_stats(county_df_for_map)
+    county_df_for_map['count_name_truc'] = county_df_for_map['county_name'].str.replace(' County', '', regex=False)
+    st.write(county_df_for_map)
+    fig = px.choropleth(
+        county_df_for_map,
+        geojson=county_boundaries_filtered,
+        locations='count_name_truc',
+        color='mean_income_per_return',
+        color_continuous_scale="Viridis",
+        featureidkey='properties.NAME',
+        # range_color=(0, 12),
+        #scope="usa",
+        # labels={metric: IRSIncomeByZip.METRIC_NAMES[metric]},
+        height=500
+    )
+    fig.update_geos(fitbounds="locations", visible=False)
+    st.plotly_chart(fig, use_container_width=True)
 
     county = st.selectbox(
         label="County",
@@ -214,7 +242,7 @@ def deep_dive():
     else:
         this_county_df = this_state_df.loc[this_state_df['county_name'] == county]
         st.write(f"# {county}")
-        st.write(this_county_df)
+        #st.write(this_county_df)
         st.plotly_chart(plot_income_distribution(this_county_df), use_container_width=True)
 
     zip_code = st.selectbox(
@@ -226,7 +254,7 @@ def deep_dive():
     else:
         this_zip_code_df = this_county_df.loc[this_county_df['zipcode'] == zip_code]
         st.write(f"# {zip_code}")
-        st.write(this_zip_code_df)
+        #st.write(this_zip_code_df)
         st.plotly_chart(plot_income_distribution(this_zip_code_df), use_container_width=True)
 
 
