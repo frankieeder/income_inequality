@@ -46,8 +46,12 @@ def get_county_geo_json():
 
 
 @st.cache
-def get_zip_geo_json(state_identifier_string='ca_california'):
-    return ZipGeoJSON().source(state_identifier_string)
+def get_zip_geo_json(state_identifier_string='ca_california', downsample=100):
+    zip_geojson = ZipGeoJSON().source(state_identifier_string)
+    #st.write(zip_geojson)
+    for c in zip_geojson['features']:
+        c['geometry']['coordinates'] = c['geometry']['coordinates'][::downsample]
+    return zip_geojson
 
 
 def county_map():
