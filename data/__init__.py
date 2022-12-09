@@ -1,3 +1,4 @@
+from .state_geojson import StateGeoJSON
 from .county_geojson import CountyGeoJSON
 from .zip_geojson import ZipGeoJSON
 from .irs_income import IRSIncome
