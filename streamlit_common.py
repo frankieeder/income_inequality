@@ -203,6 +203,7 @@ def deep_dive():
         this_state_df = income_df.loc[income_df['state_name'] == state]
         st.write(this_state_df)
         state_id = this_state_df['STATEFIPS'].values[0]
+        state_postal = this_state_df['STATE'].values[0]
         st.write(state_id)
         st.write(f"# {state}")
         #st.write(this_state_df)
@@ -244,6 +245,31 @@ def deep_dive():
         st.write(f"# {county}")
         #st.write(this_county_df)
         st.plotly_chart(plot_income_distribution(this_county_df), use_container_width=True)
+
+    zip_boundaries = dict(get_zip_geo_json(f"{state_postal.lower()}_{state.lower()}"))
+    # county_features = [c for c in county_boundaries['features'] if int(c['properties']['STATE']) == state_id]
+    # county_boundaries_filtered = dict(type='FeatureCollection', features=county_features)
+    # st.write(county_boundaries_filtered)
+    # st.write(county_boundaries)
+    #st.write(zip_boundaries)
+    zip_df_for_map = this_county_df.groupby('zipcode').sum().reset_index()
+    zip_df_for_map = IRSIncome.calculate_additional_income_stats(zip_df_for_map)
+    st.write("zip_df_for_map")
+    st.write(zip_df_for_map)
+    fig = px.choropleth(
+        zip_df_for_map,
+        geojson=zip_boundaries,
+        locations='zipcode',
+        color='mean_income_per_return',
+        color_continuous_scale="Viridis",
+        featureidkey='properties.ZCTA5CE10',
+        # range_color=(0, 12),
+        # scope="usa",
+        # labels={metric: IRSIncomeByZip.METRIC_NAMES[metric]},
+        height=500
+    )
+    fig.update_geos(fitbounds="locations", visible=False)
+    st.plotly_chart(fig, use_container_width=True)
 
     zip_code = st.selectbox(
         label="County",
