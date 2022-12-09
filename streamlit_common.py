@@ -9,6 +9,9 @@ from data import IRSIncome
 from data import ZipToFips
 from data import FipsCountyInfo
 
+STATE_COLS = ['STATEFIPS', 'STATE', 'state_name']
+COUNTY_COLS = ['county', 'county_name']
+
 
 @st.cache
 def get_irs_income_by_county():
@@ -46,9 +49,8 @@ def get_county_geo_json():
 
 
 @st.cache
-def get_zip_geo_json(state_identifier_string='ca_california', downsample=100):
+def get_zip_geo_json(state_identifier_string, downsample=100):
     zip_geojson = ZipGeoJSON().source(state_identifier_string)
-    #st.write(zip_geojson)
     for c in zip_geojson['features']:
         c['geometry']['coordinates'] = c['geometry']['coordinates'][::downsample]
     return zip_geojson
@@ -170,18 +172,18 @@ def plot_income_distribution(df, **kwargs):
     return fig
 
 
-def deep_dive():
-    income_df = get_irs_income()
-    STATE_COLS = ['STATEFIPS', 'STATE', 'state_name']
+def plot_total_histogram(income_df):
     by_state = income_df.groupby(STATE_COLS + AGI_STUB_COLS).sum()
     by_state = by_state.reset_index()
     by_state = IRSIncome.calculate_additional_income_stats(by_state)
     st.write("# United States")
-    #st.write(by_state)
+    # st.write(by_state)
     st.plotly_chart(plot_income_distribution(by_state), use_container_width=True)
 
+
+def plot_state_choropleth(income_df):
     state_boundaries = get_state_geo_json()
-    state_df_for_map = by_state.groupby(STATE_COLS).sum().reset_index()
+    state_df_for_map = income_df.groupby(STATE_COLS).sum().reset_index()
     state_df_for_map = IRSIncome.calculate_additional_income_stats(state_df_for_map)
     fig = px.choropleth(
         state_df_for_map,
@@ -197,28 +199,22 @@ def deep_dive():
     )
     st.plotly_chart(fig, use_container_width=True)
 
-    state = st.selectbox(
-        label="State",
-        options=list(by_state['state_name'].unique()) + ["All"],
-    )
-    if state == "All":
-        raise NotImplementedError
-    else:
-        this_state_df = income_df.loc[income_df['state_name'] == state]
-        st.write(this_state_df)
-        state_id = this_state_df['STATEFIPS'].values[0]
-        state_postal = this_state_df['STATE'].values[0]
-        st.write(state_id)
-        st.write(f"# {state}")
-        #st.write(this_state_df)
-        st.plotly_chart(plot_income_distribution(this_state_df), use_container_width=True)
 
-    COUNTY_COLS = ['county', 'county_name']
+def plot_state_histogram(income_df, state):
+    this_state_df = income_df.loc[income_df['state_name'] == state]
+    state_id = this_state_df['STATEFIPS'].values[0]
+    state_postal = this_state_df['STATE'].values[0]
+
+    st.write(f"# {state}")
+    st.plotly_chart(plot_income_distribution(this_state_df), use_container_width=True)
+
+    return state_id, state_postal, this_state_df
+
+
+def plot_county_choropleth(this_state_df, state_id):
     county_boundaries = dict(get_county_geo_json())
     county_features = [c for c in county_boundaries['features'] if int(c['properties']['STATE']) == state_id]
     county_boundaries_filtered = dict(type='FeatureCollection', features=county_features)
-    #st.write(county_boundaries_filtered)
-    #st.write(county_boundaries)
     county_df_for_map = this_state_df.groupby(COUNTY_COLS).sum().reset_index()
     county_df_for_map = IRSIncome.calculate_additional_income_stats(county_df_for_map)
     county_df_for_map['count_name_truc'] = county_df_for_map['county_name'].str.replace(' County', '', regex=False)
@@ -231,31 +227,23 @@ def deep_dive():
         color_continuous_scale="Viridis",
         featureidkey='properties.NAME',
         # range_color=(0, 12),
-        #scope="usa",
+        # scope="usa",
         # labels={metric: IRSIncomeByZip.METRIC_NAMES[metric]},
         height=500
     )
     fig.update_geos(fitbounds="locations", visible=False)
     st.plotly_chart(fig, use_container_width=True)
 
-    county = st.selectbox(
-        label="County",
-        options=list(this_state_df['county_name'].unique()) + ["All"],
-    )
-    if county == "All":
-        raise NotImplementedError
-    else:
-        this_county_df = this_state_df.loc[this_state_df['county_name'] == county]
-        st.write(f"# {county}")
-        #st.write(this_county_df)
-        st.plotly_chart(plot_income_distribution(this_county_df), use_container_width=True)
 
+def plot_county_histogram(this_state_df, county):
+    this_county_df = this_state_df.loc[this_state_df['county_name'] == county]
+    st.write(f"# {county}")
+    st.plotly_chart(plot_income_distribution(this_county_df), use_container_width=True)
+    return this_county_df
+
+
+def plot_zip_code_choropleth(this_county_df, state, state_postal):
     zip_boundaries = dict(get_zip_geo_json(f"{state_postal.lower()}_{state.lower()}"))
-    # county_features = [c for c in county_boundaries['features'] if int(c['properties']['STATE']) == state_id]
-    # county_boundaries_filtered = dict(type='FeatureCollection', features=county_features)
-    # st.write(county_boundaries_filtered)
-    # st.write(county_boundaries)
-    #st.write(zip_boundaries)
     zip_df_for_map = this_county_df.groupby('zipcode').sum().reset_index()
     zip_df_for_map = IRSIncome.calculate_additional_income_stats(zip_df_for_map)
     st.write("zip_df_for_map")
@@ -275,17 +263,54 @@ def deep_dive():
     fig.update_geos(fitbounds="locations", visible=False)
     st.plotly_chart(fig, use_container_width=True)
 
+
+def plot_zip_code_histogram(this_county_df, zip_code):
+    this_zip_code_df = this_county_df.loc[this_county_df['zipcode'] == zip_code]
+    st.write(f"# {zip_code}")
+    # st.write(this_zip_code_df)
+    st.plotly_chart(plot_income_distribution(this_zip_code_df), use_container_width=True)
+
+
+def deep_dive_zip(this_county_df, zip_code):
+    plot_zip_code_histogram(this_county_df, zip_code)
+
+
+def deep_dive_county(this_state_df, county, state, state_postal):
+    this_county_df = plot_county_histogram(this_state_df, county)
+    plot_zip_code_choropleth(this_county_df, state, state_postal)
+
     zip_code = st.selectbox(
         label="County",
-        options=list(this_county_df['zipcode'].unique()) + ["All"],  # TODO: This needs to be updated to include ALL since county and zip boundaries don't align
+        options=list(this_county_df['zipcode'].unique()) + ["All"],
+        # TODO: This needs to be updated to include ALL since county and zip boundaries don't align
     )
-    if zip_code == "All":
-        raise NotImplementedError
-    else:
-        this_zip_code_df = this_county_df.loc[this_county_df['zipcode'] == zip_code]
-        st.write(f"# {zip_code}")
-        #st.write(this_zip_code_df)
-        st.plotly_chart(plot_income_distribution(this_zip_code_df), use_container_width=True)
+    if zip_code != "All":
+        deep_dive_zip(this_county_df, zip_code)
+
+
+def deep_dive_state(income_df, state):
+    state_id, state_postal, this_state_df = plot_state_histogram(income_df, state)
+    plot_county_choropleth(this_state_df, state_id)
+
+    county = st.selectbox(
+        label="County",
+        options=["All"] + list(this_state_df['county_name'].unique()),
+    )
+    if county != "All":
+        deep_dive_county(this_state_df, county, state, state_postal)
+
+
+def deep_dive():
+    income_df = get_irs_income()
+
+    plot_total_histogram(income_df)
+    plot_state_choropleth(income_df)
+    state = st.selectbox(
+        label="State",
+        options=["All"] + list(income_df['state_name'].unique()),
+    )
+    if state != "All":
+        deep_dive_state(income_df, state)
 
 
 if __name__ == "__main__":
