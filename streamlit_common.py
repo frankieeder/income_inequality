@@ -218,7 +218,7 @@ def plot_county_choropleth(this_state_df, state_id):
     county_df_for_map = this_state_df.groupby(COUNTY_COLS).sum().reset_index()
     county_df_for_map = IRSIncome.calculate_additional_income_stats(county_df_for_map)
     county_df_for_map['count_name_truc'] = county_df_for_map['county_name'].str.replace(' County', '', regex=False)
-    st.write(county_df_for_map)
+    #st.write(county_df_for_map)
     fig = px.choropleth(
         county_df_for_map,
         geojson=county_boundaries_filtered,
@@ -246,8 +246,8 @@ def plot_zip_code_choropleth(this_county_df, state, state_postal):
     zip_boundaries = dict(get_zip_geo_json(f"{state_postal.lower()}_{state.lower()}"))
     zip_df_for_map = this_county_df.groupby('zipcode').sum().reset_index()
     zip_df_for_map = IRSIncome.calculate_additional_income_stats(zip_df_for_map)
-    st.write("zip_df_for_map")
-    st.write(zip_df_for_map)
+    #st.write("zip_df_for_map")
+    #st.write(zip_df_for_map)
     fig = px.choropleth(
         zip_df_for_map,
         geojson=zip_boundaries,
