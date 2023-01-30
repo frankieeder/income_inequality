@@ -1,16 +1,12 @@
 import streamlit as st
 
-from streamlit_common import zip_info
-from streamlit_common import county_map
-from streamlit_common import zip_map
-from streamlit_common import deep_dive
-from streamlit_common import income_by_age
+from streamlit_common import views
 
 st.set_page_config(page_title="Income by Geo - US IRS", page_icon="📈", layout='wide')
 
 page_names_to_funcs = {
-    "Income by Age": income_by_age,
-    "Deep Dive": deep_dive,
+    "Income by Age": views.income_by_age,
+    "Deep Dive": views.deep_dive,
     # "County Map": county_map,
     # "Zip Code Info": zip_info,
     # "Zip Map": zip_map,

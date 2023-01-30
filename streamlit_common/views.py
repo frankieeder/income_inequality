@@ -1,71 +1,18 @@
 import streamlit as st
 import plotly.express as px
 import plotly.graph_objects as go
-from data import StateGeoJSON
-from data import CountyGeoJSON
-from data import ZipGeoJSON
 from data import IRSIncomeByCounty
 from data import IRSIncomeByZip
 from data import IRSIncome
-from data import ZipToFips
-from data import FipsCountyInfo
-from data import DQYDJIncomeByAge
+from . import data as streamlit_data
 
 STATE_COLS = ['STATEFIPS', 'STATE', 'state_name']
 COUNTY_COLS = ['county', 'county_name']
 
 
-@st.cache
-def get_irs_income_by_county():
-    return IRSIncomeByCounty().process()
-
-
-@st.cache
-def get_irs_income_by_zip():
-    return IRSIncomeByZip().process()
-
-
-@st.cache
-def get_irs_income():
-    return IRSIncome().process()
-
-
-@st.cache
-def get_raw_zip_to_fips():
-    return ZipToFips().source()
-
-
-@st.cache
-def get_fips_county_info():
-    return FipsCountyInfo().process()
-
-
-@st.cache
-def get_state_geo_json():
-    return StateGeoJSON().process()
-
-
-#@st.cache
-def get_county_geo_json():
-    return CountyGeoJSON().process()
-
-
-# @st.experimental_singleton
-def get_dqydj_income_by_age():
-    return DQYDJIncomeByAge().process()
-
-
-@st.cache
-def get_zip_geo_json(state_identifier_string, downsample=100):
-    zip_geojson = ZipGeoJSON().source(state_identifier_string)
-    for c in zip_geojson['features']:
-        c['geometry']['coordinates'] = c['geometry']['coordinates'][::downsample]
-    return zip_geojson
-
-
 def county_map():
-    county_sums = get_irs_income_by_county()
-    county_boundaries = get_county_geo_json()
+    county_sums = streamlit_data.get_irs_income_by_county()
+    county_boundaries = streamlit_data.get_county_geo_json()
     metric = st.selectbox(
         label="Metric",
         options=list(IRSIncomeByCounty.METRIC_NAMES.keys()),
@@ -92,7 +39,7 @@ def county_map():
 
 
 def zip_info():
-    income_df = get_irs_income()
+    income_df = streamlit_data.get_irs_income()
     #county_boundaries = get_county_geo_json()
     zip_code = st.text_input(
         label="Zip Code",
@@ -136,8 +83,8 @@ def zip_map():
 
     # PLOT
 
-    county_sums = get_irs_income_by_zip()
-    zip_boundaries = get_zip_geo_json()
+    county_sums = streamlit_data.get_irs_income_by_zip()
+    zip_boundaries = streamlit_data.get_zip_geo_json()
 
     metric = st.selectbox(
         label="Metric",
@@ -189,7 +136,7 @@ def plot_total_histogram(income_df):
 
 
 def plot_state_choropleth(income_df):
-    state_boundaries = get_state_geo_json()
+    state_boundaries = streamlit_data.get_state_geo_json()
     state_df_for_map = income_df.groupby(STATE_COLS).sum().reset_index()
     state_df_for_map = IRSIncome.calculate_additional_income_stats(state_df_for_map)
     fig = px.choropleth(
@@ -219,7 +166,7 @@ def plot_state_histogram(income_df, state):
 
 
 def plot_county_choropleth(this_state_df, state_id):
-    county_boundaries = dict(get_county_geo_json())
+    county_boundaries = dict(streamlit_data.get_county_geo_json())
     county_features = [c for c in county_boundaries['features'] if int(c['properties']['STATE']) == state_id]
     county_boundaries_filtered = dict(type='FeatureCollection', features=county_features)
     county_df_for_map = this_state_df.groupby(COUNTY_COLS).sum().reset_index()
@@ -250,7 +197,7 @@ def plot_county_histogram(this_state_df, county):
 
 
 def plot_zip_code_choropleth(this_county_df, state, state_postal):
-    zip_boundaries = dict(get_zip_geo_json(f"{state_postal.lower()}_{state.lower()}"))
+    zip_boundaries = dict(streamlit_data.get_zip_geo_json(f"{state_postal.lower()}_{state.lower()}"))
     zip_df_for_map = this_county_df.groupby('zipcode').sum().reset_index()
     zip_df_for_map = IRSIncome.calculate_additional_income_stats(zip_df_for_map)
     #st.write("zip_df_for_map")
@@ -308,7 +255,7 @@ def deep_dive_state(income_df, state):
 
 
 def deep_dive():
-    income_df = get_irs_income()
+    income_df = streamlit_data.get_irs_income()
 
     plot_total_histogram(income_df)
     plot_state_choropleth(income_df)
@@ -321,7 +268,7 @@ def deep_dive():
 
 
 def income_by_age():
-    df = get_dqydj_income_by_age()
+    df = streamlit_data.get_dqydj_income_by_age()
     fig = go.Figure()
     for i, c in enumerate(df.columns):
         if c != 'Average':
@@ -343,7 +290,3 @@ def income_by_age():
             ))
 
     st.plotly_chart(fig, use_container_width=True)
-
-
-if __name__ == "__main__":
-    deep_dive()
