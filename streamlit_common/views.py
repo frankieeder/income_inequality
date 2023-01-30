@@ -9,6 +9,11 @@ from . import data as streamlit_data
 STATE_COLS = ['STATEFIPS', 'STATE', 'state_name']
 COUNTY_COLS = ['county', 'county_name']
 
+PX_CHOROPLETH_FORMAT_KWARGS = dict(
+    marker_line_color='black',
+    marker_line_width=0.1,
+)
+
 
 def county_map():
     st.write('# Metrics by County')
@@ -40,6 +45,7 @@ def county_map():
             'state_name': True,
         }
     )
+    fig.update_traces(**PX_CHOROPLETH_FORMAT_KWARGS)
     st.plotly_chart(fig, use_container_width=True)
 
 
@@ -119,6 +125,7 @@ def zip_map():
         labels={metric: IRSIncomeByZip.METRIC_NAMES[metric]},
         height=500
     )
+    fig.update_traces(**PX_CHOROPLETH_FORMAT_KWARGS)
     st.plotly_chart(fig, use_container_width=True)
 
 
@@ -167,6 +174,7 @@ def plot_state_choropleth(income_df):
         # labels={metric: IRSIncomeByZip.METRIC_NAMES[metric]},
         height=500
     )
+    fig.update_traces(**PX_CHOROPLETH_FORMAT_KWARGS)
     st.plotly_chart(fig, use_container_width=True)
 
 
@@ -201,6 +209,7 @@ def plot_county_choropleth(this_state_df, state_id):
         # labels={metric: IRSIncomeByZip.METRIC_NAMES[metric]},
         height=500
     )
+    fig.update_traces(**PX_CHOROPLETH_FORMAT_KWARGS)
     fig.update_geos(fitbounds="locations", visible=False)
     st.plotly_chart(fig, use_container_width=True)
 
@@ -230,6 +239,7 @@ def plot_zip_code_choropleth(this_county_df, state, state_postal):
         # labels={metric: IRSIncomeByZip.METRIC_NAMES[metric]},
         height=500
     )
+    fig.update_traces(**PX_CHOROPLETH_FORMAT_KWARGS)
     fig.update_geos(fitbounds="locations", visible=False)
     st.plotly_chart(fig, use_container_width=True)
 
