@@ -9,8 +9,18 @@ from . import data as streamlit_data
 STATE_COLS = ['STATEFIPS', 'STATE', 'state_name']
 COUNTY_COLS = ['county', 'county_name']
 
+PX_CHOROPLETH_FORMAT_KWARGS = dict(
+    marker_line_color='black',
+    marker_line_width=0.1,
+)
+
 
 def county_map():
+    st.write('# Metrics by County')
+    st.write('Select the metric below to visualize per-county.')
+    st.write('Data from the '
+             '[IRS](https://www.irs.gov/statistics/soi-tax-stats-individual-income-tax-statistics-zip-code-data-soi)')
+
     county_sums = streamlit_data.get_irs_income_by_county()
     county_boundaries = streamlit_data.get_county_geo_json()
     metric = st.selectbox(
@@ -35,10 +45,16 @@ def county_map():
             'state_name': True,
         }
     )
+    fig.update_traces(**PX_CHOROPLETH_FORMAT_KWARGS)
     st.plotly_chart(fig, use_container_width=True)
 
 
 def zip_info():
+    st.write('# Metrics by Zip')
+    st.write('Select the zip to visualize income distribution for.')
+    st.write('Data from the '
+             '[IRS](https://www.irs.gov/statistics/soi-tax-stats-individual-income-tax-statistics-zip-code-data-soi)')
+
     income_df = streamlit_data.get_irs_income()
     #county_boundaries = get_county_geo_json()
     zip_code = st.text_input(
@@ -60,8 +76,14 @@ def zip_info():
 
 
 def zip_map():
+    st.write('# Metrics by County')
+    st.write('Select a state then county to analyze for .')
+    st.write('Data from the '
+             '[IRS](https://www.irs.gov/statistics/soi-tax-stats-individual-income-tax-statistics-zip-code-data-soi)')
+
     #zip_to_fips = get_raw_zip_to_fips()
-    fips_county_info = get_fips_county_info()
+    fips_county_info = streamlit_data.get_fips_county_info()
+    st.write(fips_county_info)
     state_options = fips_county_info['state_name'].unique()
     state = st.selectbox(
         label="State",
@@ -84,7 +106,7 @@ def zip_map():
     # PLOT
 
     county_sums = streamlit_data.get_irs_income_by_zip()
-    zip_boundaries = streamlit_data.get_zip_geo_json()
+    zip_boundaries = streamlit_data.get_zip_geo_json(f'ahhhh_{state}')
 
     metric = st.selectbox(
         label="Metric",
@@ -103,6 +125,7 @@ def zip_map():
         labels={metric: IRSIncomeByZip.METRIC_NAMES[metric]},
         height=500
     )
+    fig.update_traces(**PX_CHOROPLETH_FORMAT_KWARGS)
     st.plotly_chart(fig, use_container_width=True)
 
 
@@ -151,6 +174,7 @@ def plot_state_choropleth(income_df):
         # labels={metric: IRSIncomeByZip.METRIC_NAMES[metric]},
         height=500
     )
+    fig.update_traces(**PX_CHOROPLETH_FORMAT_KWARGS)
     st.plotly_chart(fig, use_container_width=True)
 
 
@@ -185,6 +209,7 @@ def plot_county_choropleth(this_state_df, state_id):
         # labels={metric: IRSIncomeByZip.METRIC_NAMES[metric]},
         height=500
     )
+    fig.update_traces(**PX_CHOROPLETH_FORMAT_KWARGS)
     fig.update_geos(fitbounds="locations", visible=False)
     st.plotly_chart(fig, use_container_width=True)
 
@@ -214,6 +239,7 @@ def plot_zip_code_choropleth(this_county_df, state, state_postal):
         # labels={metric: IRSIncomeByZip.METRIC_NAMES[metric]},
         height=500
     )
+    fig.update_traces(**PX_CHOROPLETH_FORMAT_KWARGS)
     fig.update_geos(fitbounds="locations", visible=False)
     st.plotly_chart(fig, use_container_width=True)
 
@@ -255,6 +281,10 @@ def deep_dive_state(income_df, state):
 
 
 def deep_dive():
+    st.write('# Deep Dive')
+    st.write('Select a geography to analyze further to start, then repeat. NOTE: in-progress')
+    st.write('Data from the '
+             '[IRS](https://www.irs.gov/statistics/soi-tax-stats-individual-income-tax-statistics-zip-code-data-soi)')
     income_df = streamlit_data.get_irs_income()
 
     plot_total_histogram(income_df)
@@ -268,6 +298,9 @@ def deep_dive():
 
 
 def income_by_age():
+    st.write('# Metrics by County')
+    st.write('Shows individual gross income distribution by age.')
+    st.write('Data from [DQYDJ](https://dqydj.com/income-percentile-by-age-calculator/)')
     df = streamlit_data.get_dqydj_income_by_age()
     fig = go.Figure()
     for i, c in enumerate(df.columns):
