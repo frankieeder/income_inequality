@@ -8,6 +8,7 @@ from data import IRSIncomeByZip
 from data import IRSIncome
 from data import ZipToFips
 from data import FipsCountyInfo
+from data import DQYDJIncomeByAge
 
 STATE_COLS = ['STATEFIPS', 'STATE', 'state_name']
 COUNTY_COLS = ['county', 'county_name']
@@ -46,6 +47,11 @@ def get_state_geo_json():
 #@st.cache
 def get_county_geo_json():
     return CountyGeoJSON().process()
+
+
+# @st.experimental_singleton
+def get_dqydj_income_by_age():
+    return DQYDJIncomeByAge().process()
 
 
 @st.cache
@@ -311,6 +317,11 @@ def deep_dive():
     )
     if state != "All":
         deep_dive_state(income_df, state)
+
+
+def income_by_age():
+    df = get_dqydj_income_by_age()
+    st.write(df)
 
 
 if __name__ == "__main__":
