@@ -7,8 +7,8 @@ from .irs_income import IRSIncome
 class IRSIncomeByGroup(DataSource):
     AGI_STUB_RANGE = range(1, 7)
     CALCULATED_METRICS = {
-        **{f'agi_stub_{i}_N1': f'Number of Tax Returns in AGI Stub {i}' for i in AGI_STUB_RANGE},
-        **{f'agi_stub_{i}_prop_N1': f'Proportion of Tax Returns in AGI Stub {i}' for i in AGI_STUB_RANGE},
+        **{f'agi_stub_{i}_N1': f'Number of Tax Returns in Tax Bracket (AGI Stub) {i}' for i in AGI_STUB_RANGE},
+        **{f'agi_stub_{i}_prop_N1': f'Proportion of Tax Returns in Tax Bracket (AGI Stub) {i}' for i in AGI_STUB_RANGE},
     }
     METRIC_NAMES = {
         **IRSIncome.METRIC_NAMES,
