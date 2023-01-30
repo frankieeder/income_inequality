@@ -61,7 +61,7 @@ def zip_info():
 
 def zip_map():
     #zip_to_fips = get_raw_zip_to_fips()
-    fips_county_info = get_fips_county_info()
+    fips_county_info = streamlit_data.get_fips_county_info()
     state_options = fips_county_info['state_name'].unique()
     state = st.selectbox(
         label="State",
