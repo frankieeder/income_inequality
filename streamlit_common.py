@@ -1,5 +1,6 @@
 import streamlit as st
 import plotly.express as px
+import plotly.graph_objects as go
 from data import StateGeoJSON
 from data import CountyGeoJSON
 from data import ZipGeoJSON
@@ -321,7 +322,27 @@ def deep_dive():
 
 def income_by_age():
     df = get_dqydj_income_by_age()
-    st.write(df)
+    fig = go.Figure()
+    for i, c in enumerate(df.columns):
+        if c != 'Average':
+            fig.add_trace(go.Scatter(
+                x=df.index,
+                y=df[c],
+                mode='lines',
+                name=c,
+                line=dict(color=px.colors.sequential.ice_r[i + 2], width=0.5),
+                fill='tonexty' if i > 0 else None,
+            ))
+        else:
+            fig.add_trace(go.Scatter(
+                x=df.index,
+                y=df[c],
+                mode='lines',
+                name=c,
+                line=dict(color='white', width=1),
+            ))
+
+    st.plotly_chart(fig, use_container_width=True)
 
 
 if __name__ == "__main__":
