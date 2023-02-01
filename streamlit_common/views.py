@@ -298,7 +298,7 @@ def deep_dive():
 
 
 def income_by_age():
-    st.write('# Metrics by County')
+    st.write('# Income Distribution by Age')
     st.write('Shows individual gross income distribution by age.')
     st.write('Data from [DQYDJ](https://dqydj.com/income-percentile-by-age-calculator/)')
     df = streamlit_data.get_dqydj_income_by_age()
