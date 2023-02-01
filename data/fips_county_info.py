@@ -34,6 +34,5 @@ class FipsCountyInfo(DataSource):
         return df
 
 
-
 if __name__ == '__main__':
     FipsCountyInfo(get_remote=True).process().to_csv(FipsCountyInfo.LOCAL_FILE_DIR, index=False)
