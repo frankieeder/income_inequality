@@ -3,7 +3,6 @@ import numpy as np
 import statsmodels.api as sm
 
 import plotly.graph_objs as go
-import plotly.express as px
 
 from data.income_percentiles_by_age.dqydj_income_by_age import DQYDJIncomeByAge
 from streamlit_common.common import write_welcome_header
