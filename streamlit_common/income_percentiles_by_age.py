@@ -40,12 +40,12 @@ def view():
 
     bottom_left, bottom_right = st.columns(2)
     with bottom_left:
-        age = st.selectbox(
+        ages = st.multiselect(
             label="Age",
             options=df.columns,
-            index=list(df.columns).index('30'),
+            default=['20', '30', '40', '50', '60', '70'],
         )
-        st.plotly_chart(generate_age_plot(df[age]), use_container_width=True)
+        st.plotly_chart(generate_age_plot(df, ages), use_container_width=True)
     with bottom_right:
         percentile = st.selectbox(
             label="Percentile",
@@ -55,11 +55,15 @@ def view():
         st.plotly_chart(generate_percentile_plot(df.loc[percentile]), use_container_width=True)
 
 
-def generate_age_plot(series):
-    fig = px.line(
-        series,
-    )
-    return fig
+def generate_age_plot(df, ages):
+    data = []
+    for i, age in enumerate(ages):
+        fig = px.line(
+            df[age],
+        )
+        fig.update_traces(line_color=px.colors.sequential.ice_r[i])
+        data += fig.data
+    return go.Figure(data)
 
 
 def generate_percentile_plot(series):
