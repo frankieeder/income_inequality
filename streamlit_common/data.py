@@ -8,6 +8,7 @@ from data import IRSIncome
 from data import ZipToFips
 from data import FipsCountyInfo
 from data import DQYDJIncomeByAge
+from data import PayscaleCeoCompensation
 
 
 @st.experimental_singleton
@@ -56,3 +57,8 @@ def get_zip_geo_json(state_identifier_string, downsample=100):
     for c in zip_geojson['features']:
         c['geometry']['coordinates'] = c['geometry']['coordinates'][::downsample]
     return zip_geojson
+
+
+# @st.experimental_singleton
+def get_payscale_ceo_compensation():
+    return PayscaleCeoCompensation().process()

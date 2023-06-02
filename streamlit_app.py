@@ -5,6 +5,7 @@ from streamlit_common import views
 st.set_page_config(page_title="Income by Geo - US IRS", page_icon="📈", layout='wide')
 
 page_names_to_funcs = {
+    "CEO Compensation Ratio": views.ceo_compensation_ratio,
     "Metrics mapped by County": views.county_map,
     # "Metrics mapped by Zip in County": views.zip_map,
     "Metrics by Zip": views.zip_info,

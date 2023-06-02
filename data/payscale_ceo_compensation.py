@@ -25,14 +25,17 @@ class PayscaleCeoCompensation(DataSource):
         else:
             return pd.read_csv(self.LOCAL_FILE_DIR)
 
-    # def clean(self, df):
-    #     df['FIPS'] = df['FIPS'].apply(lambda i: format(i, '05d'))
-    #     df = df.set_index('FIPS')
-    #     df = df.rename(columns={
-    #         'County or equivalent': 'county_name',
-    #         'State or equivalent': 'state_name',
-    #     })
-    #     return df
+    def clean(self, df):
+        null_cols = [c for c in df.columns if c.startswith('Unnamed')]
+        df = df.drop(columns=null_cols)
+        currency_cols = {
+            'ceo_compensation': 'Total CEO  Compensation',
+            'median_compensation': 'Median Worker  Annual Pay  (Cash)'
+        }
+        for new_c, c in currency_cols.items():
+            df[new_c] = df[c].replace('[\$,]', '', regex=True).astype(float)
+        df['ratio'] = df['ceo_compensation'] / df['median_compensation']
+        return df
 
 
 if __name__ == '__main__':

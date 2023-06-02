@@ -4,7 +4,11 @@ import plotly.graph_objects as go
 from data import IRSIncomeByCounty
 from data import IRSIncomeByZip
 from data import IRSIncome
+from data import DQYDJIncomeByAge
+from data import PayscaleCeoCompensation
 from . import data as streamlit_data
+import locale
+locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 STATE_COLS = ['STATEFIPS', 'STATE', 'state_name']
 COUNTY_COLS = ['county', 'county_name']
@@ -300,7 +304,7 @@ def deep_dive():
 def income_by_age():
     st.write('# Income Distribution by Age')
     st.write('Shows individual gross income distribution by age.')
-    st.write('Data from [DQYDJ](https://dqydj.com/income-percentile-by-age-calculator/)')
+    st.write(f'Data from [DQYDJ]({DQYDJIncomeByAge.URL})')
     df = streamlit_data.get_dqydj_income_by_age()
     fig = go.Figure()
     for i, c in enumerate(df.columns):
@@ -323,3 +327,37 @@ def income_by_age():
             ))
 
     st.plotly_chart(fig, use_container_width=True)
+
+
+def ceo_compensation_ratio():
+    st.write('# CEO Compensation Time Ratio')
+    st.write('Shows CEO Compensation compared to median worker and your compensation, from the lens of time.')
+    st.write(f'Data from [Payscale]({PayscaleCeoCompensation.URL})')
+    df = streamlit_data.get_payscale_ceo_compensation()
+
+    st.write('---')
+
+    workday_in_minutes = 60 * 8
+    max_ratio = df['ratio'].max()
+    max_ratio_info = df[df['ratio'] == max_ratio].to_dict('records')[0]
+    st.write(f'If employees of **{max_ratio_info["Company Name"]}** were compensated at the rate of the highest paid '
+             f'CEO (**{locale.currency(max_ratio_info["ceo_compensation"], grouping=True)}**), '
+             f'the median worker would only need to work')
+    st.write(f'## {(workday_in_minutes / max_ratio):2f} minutes per workday')
+    st.write('to maintain their overall pay.')
+
+    st.write('---')
+
+    my_pay = st.text_input("My yearly pay, in USD")
+    if my_pay:
+        my_pay = float(my_pay)
+        max_ceo_pay = df['ceo_compensation'].max()
+        max_ceo_pay_info = df[df['ceo_compensation'] == max_ceo_pay].to_dict('records')[0]
+        my_ratio = max_ceo_pay / my_pay
+        st.write(
+            f'If you  were compensated at the rate of the highest paid '
+            f'CEO (**{max_ceo_pay_info["Company Name"]}, {locale.currency(max_ceo_pay_info["ceo_compensation"], grouping=True)}**), '
+            f'you would only need to work')
+        st.write(f'## {(workday_in_minutes / my_ratio):2f} minutes per workday')
+        st.write('to maintain your overall pay.')
+    st.write(df)
