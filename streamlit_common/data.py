@@ -53,6 +53,6 @@ def get_dqydj_income_by_age():
 @st.experimental_singleton
 def get_zip_geo_json(state_identifier_string, downsample=100):
     zip_geojson = ZipGeoJSON().source(state_identifier_string)
-    for c in zip_geojson['features']:
-        c['geometry']['coordinates'] = c['geometry']['coordinates'][::downsample]
+    for c in zip_geojson["features"]:
+        c["geometry"]["coordinates"] = c["geometry"]["coordinates"][::downsample]
     return zip_geojson

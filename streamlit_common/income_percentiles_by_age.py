@@ -9,9 +9,11 @@ from . import data as streamlit_data
 
 
 def view():
-    st.write('# Income Percentiles by Age')
-    st.write('Shows individual gross income distribution by age.')
-    st.write('Data from [DQYDJ](https://dqydj.com/income-percentile-by-age-calculator/)')
+    st.write("# Income Percentiles by Age")
+    st.write("Shows individual gross income distribution by age.")
+    st.write(
+        "Data from [DQYDJ](https://dqydj.com/income-percentile-by-age-calculator/)"
+    )
     df = streamlit_data.get_dqydj_income_by_age()
     z_values = df.values
     smooth = st.checkbox("Smooth raw data", value=True)
@@ -37,7 +39,7 @@ def generate_surface_figure(z_values) -> go.Figure:
         data=[
             go.Surface(
                 z=z_values,
-                colorscale='ice_r',
+                colorscale="ice_r",
                 #             contours = {
                 #                 #"y": {"show": True, "size": 0.01, "color":"black"},
                 #                 #"z": {"show": True, "start": 0.5, "end": 0.8, "size": 0.01}
@@ -48,10 +50,8 @@ def generate_surface_figure(z_values) -> go.Figure:
     fig.update_layout(
         title="Income by Income Percentile and Age - Surface",
         scene=dict(
-            xaxis_title="Age",
-            yaxis_title="Percentile",
-            zaxis_title="Income (USD)"
-        )
+            xaxis_title="Age", yaxis_title="Percentile", zaxis_title="Income (USD)"
+        ),
     )
     fig = add_common_figure_formatting(fig)
     return fig
@@ -62,13 +62,13 @@ def generate_contour_figure(z_values) -> go.Figure:
         data=[
             go.Contour(
                 z=z_values,
-                colorscale='ice_r',
+                colorscale="ice_r",
                 contours=dict(
                     showlabels=True,  # show labels on contours
                     labelfont=dict(  # label font properties
                         size=8,
-                        color='white',
-                    )
+                        color="white",
+                    ),
                 ),
             )
         ]

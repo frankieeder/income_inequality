@@ -1,5 +1,6 @@
 # From https://github.com/frankieeder/data_flow/blob/main/abstract.py
 
+
 class DataSource:
     def source(self):
         raise NotImplementedError
