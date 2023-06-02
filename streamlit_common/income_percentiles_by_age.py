@@ -8,7 +8,7 @@ import plotly.express as px
 from data.income_percentiles_by_age.dqydj_income_by_age import DQYDJIncomeByAge
 
 
-@st.experimental_singleton
+@st.cache_resource
 def get_dqydj_income_by_age():
     return DQYDJIncomeByAge().process()
 

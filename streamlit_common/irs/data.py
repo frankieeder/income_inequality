@@ -9,42 +9,42 @@ from data.irs.irs_income_by_zip import IRSIncomeByZip
 from data.irs.irs_income import IRSIncome
 
 
-@st.experimental_singleton
+@st.cache_resource
 def get_irs_income_by_county():
     return IRSIncomeByCounty().process()
 
 
-@st.experimental_singleton
+@st.cache_resource
 def get_irs_income_by_zip():
     return IRSIncomeByZip().process()
 
 
-@st.experimental_singleton
+@st.cache_resource
 def get_irs_income():
     return IRSIncome().process()
 
 
-@st.experimental_singleton
+@st.cache_resource
 def get_raw_zip_to_fips():
     return ZipToFips().source()
 
 
-@st.experimental_singleton
+@st.cache_resource
 def get_fips_county_info():
     return FipsCountyInfo().process()
 
 
-@st.experimental_singleton
+@st.cache_resource
 def get_state_geo_json():
     return StateGeoJSON().process()
 
 
-@st.experimental_singleton
+@st.cache_resource
 def get_county_geo_json():
     return CountyGeoJSON().process()
 
 
-@st.experimental_singleton
+@st.cache_resource
 def get_zip_geo_json(state_identifier_string, downsample=100):
     zip_geojson = ZipGeoJSON().source(state_identifier_string)
     for c in zip_geojson["features"]:
