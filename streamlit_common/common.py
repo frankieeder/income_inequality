@@ -4,7 +4,7 @@ import streamlit as st
 def write_welcome_header():
     st.write("# Income Inequality")
     st.write(
-        "This web app explores a few different lenses on income inequality in the USA."
+        "This web app offers a few different lenses into income inequality in the USA."
     )
     st.write(
         "Use the sidebar on the left to explore different data sources and"
