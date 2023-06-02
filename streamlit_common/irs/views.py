@@ -4,6 +4,7 @@ from data.irs.irs_income_by_county import IRSIncomeByCounty
 from data.irs.irs_income_by_zip import IRSIncomeByZip
 from data.irs.irs_income import IRSIncome
 from . import data as streamlit_data
+from streamlit_common.common import write_welcome_header
 
 STATE_COLS = ["STATEFIPS", "STATE", "state_name"]
 COUNTY_COLS = ["county", "county_name"]
@@ -15,6 +16,7 @@ PX_CHOROPLETH_FORMAT_KWARGS = dict(
 
 
 def county_map():
+    write_welcome_header()
     st.write("# Metrics by County")
     st.write("Select the metric below to visualize per-county.")
     st.write(
@@ -51,6 +53,7 @@ def county_map():
 
 
 def zip_info():
+    write_welcome_header()
     st.write("# Metrics by Zip")
     st.write("Select the zip to visualize income distribution for.")
     st.write(
@@ -294,6 +297,7 @@ def deep_dive_state(income_df, state):
 
 
 def deep_dive():
+    write_welcome_header()
     st.write("# Deep Dive")
     st.write(
         "Select a geography to analyze further to start, then repeat. NOTE: in-progress"

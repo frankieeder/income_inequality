@@ -12,7 +12,9 @@ class IRSIncomeByGroup(DataSource):
             for i in AGI_STUB_RANGE
         },
         **{
-            f"agi_stub_{i}_prop_N1": f"Proportion of Tax Returns in Tax Bracket (AGI Stub) {i}"
+            f"agi_stub_{i}_prop_N1": (
+                f"Proportion of Tax Returns in Tax Bracket (AGI Stub) {i}"
+            )
             for i in AGI_STUB_RANGE
         },
     }

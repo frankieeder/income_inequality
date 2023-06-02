@@ -6,6 +6,7 @@ import plotly.graph_objs as go
 import plotly.express as px
 
 from data.income_percentiles_by_age.dqydj_income_by_age import DQYDJIncomeByAge
+from streamlit_common.common import write_welcome_header
 
 
 @st.cache_resource
@@ -14,6 +15,7 @@ def get_dqydj_income_by_age():
 
 
 def view():
+    write_welcome_header()
     st.write("# Income Percentiles by Age")
     st.write("Shows individual gross income distribution by age.")
     st.write(
