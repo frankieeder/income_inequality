@@ -295,31 +295,3 @@ def deep_dive():
     )
     if state != "All":
         deep_dive_state(income_df, state)
-
-
-def income_by_age():
-    st.write('# Metrics by County')
-    st.write('Shows individual gross income distribution by age.')
-    st.write('Data from [DQYDJ](https://dqydj.com/income-percentile-by-age-calculator/)')
-    df = streamlit_data.get_dqydj_income_by_age()
-    fig = go.Figure()
-    for i, c in enumerate(df.columns):
-        if c != 'Average':
-            fig.add_trace(go.Scatter(
-                x=df.index,
-                y=df[c],
-                mode='lines',
-                name=c,
-                line=dict(color=px.colors.sequential.ice_r[i + 2], width=0.5),
-                fill='tonexty' if i > 0 else None,
-            ))
-        else:
-            fig.add_trace(go.Scatter(
-                x=df.index,
-                y=df[c],
-                mode='lines',
-                name=c,
-                line=dict(color='white', width=1),
-            ))
-
-    st.plotly_chart(fig, use_container_width=True)

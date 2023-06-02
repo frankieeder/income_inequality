@@ -4,3 +4,4 @@ extra-streamlit-components
 lxml
 pandas
 openpyxl
+statsmodels
