@@ -46,6 +46,11 @@ def county_map():
             "state_name": True,
         },
     )
+    fig.update_layout(
+        # Pain to find
+        # https://community.plotly.com/t/plotly-express-in-python-is-it-possible-to-manually-label-your-legend-in-px-choropleth/42926/4
+        coloraxis_colorbar_title="",
+    )
     fig.update_traces(**PX_CHOROPLETH_FORMAT_KWARGS)
     st.plotly_chart(fig, use_container_width=True)
 
@@ -69,6 +74,8 @@ def zip_info():
     zipcode_data = income_df[income_df["zipcode"] == zip_code]
     if len(zipcode_data):
         fig = px.bar(zipcode_data, x="agi_stub_desc", y="N1")
+        fig.update_xaxes(title="Adjusted Gross Income Bracket (AGI Stub)")
+        fig.update_yaxes(title="Number of Returns")
         st.plotly_chart(fig, use_container_width=True)
     else:
         st.write(f"Zip code {zip_code} not found")

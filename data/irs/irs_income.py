@@ -27,13 +27,13 @@ class IRSIncome(DataSource):
         6: "$200k+",
     }
     CALCULATED_METRICS = {
-        "mean_income_per_return": "Mean Income per Return",
-        "mean_income_per_individual": "Mean Income per Individual",
+        "mean_income_per_return": "Mean AGI per Return (Thousands of USD)",
+        "mean_income_per_individual": "Mean AGI per Individual (Thousands of USD)",
     }
     METRIC_NAMES = {
         "N1": "Number of Tax Returns",
         "N2": "Number of Individuals",
-        "A00100": "Total AGI",
+        "A00100": "Total AGI (Thousands of USD)",
         **CALCULATED_METRICS,
     }
 

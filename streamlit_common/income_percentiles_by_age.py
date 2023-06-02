@@ -3,7 +3,6 @@ import numpy as np
 import statsmodels.api as sm
 
 import plotly.graph_objs as go
-import plotly.express as px
 
 from data.income_percentiles_by_age.dqydj_income_by_age import DQYDJIncomeByAge
 
@@ -21,7 +20,11 @@ def view():
     )
     df = get_dqydj_income_by_age()
     z_values = df.values
-    smooth = st.checkbox("Smooth raw data", value=True)
+    smooth = st.checkbox(
+        "Smooth raw data",
+        value=True,
+        help="Apples trend line smoothing (LOWESS) across each percentile to filter noisy portions of dataset",
+    )
     if smooth:
         z_values = smooth_matrix_along_rows_lowess(z_values)
 
