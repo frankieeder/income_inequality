@@ -6,10 +6,10 @@ from streamlit_common import views
 from streamlit_common import income_percentiles_by_age
 
 page_names_to_funcs = {
+    "Income by Age": income_percentiles_by_age.view,
     "Metrics mapped by County": views.county_map,
     # "Metrics mapped by Zip in County": views.zip_map,
     "Metrics by Zip": views.zip_info,
-    "Income by Age": income_percentiles_by_age.view,
     "BETA - Geographic Deep Dive": views.deep_dive,
 }
 
