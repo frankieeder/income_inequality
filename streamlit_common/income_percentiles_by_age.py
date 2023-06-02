@@ -18,8 +18,11 @@ def view():
     if smooth:
         z_values = smooth_matrix_along_rows_lowess(z_values)
 
-    st.plotly_chart(generate_surface_figure(z_values), use_container_width=True)
-    st.plotly_chart(generate_contour_figure(z_values), use_container_width=True)
+    left, right = st.columns(2)
+    with left:
+        st.plotly_chart(generate_surface_figure(z_values), use_container_width=True)
+    with right:
+        st.plotly_chart(generate_contour_figure(z_values), use_container_width=True)
 
 
 def add_common_figure_formatting(fig: go.Figure) -> go.Figure:
