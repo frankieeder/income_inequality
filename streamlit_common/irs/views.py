@@ -51,7 +51,7 @@ def county_map():
     fig.update_layout(
         # Pain to find
         # https://community.plotly.com/t/plotly-express-in-python-is-it-possible-to-manually-label-your-legend-in-px-choropleth/42926/4
-        coloraxis_colorbar_title='',
+        coloraxis_colorbar_title="",
     )
     fig.update_traces(**PX_CHOROPLETH_FORMAT_KWARGS)
     st.plotly_chart(fig, use_container_width=True)
