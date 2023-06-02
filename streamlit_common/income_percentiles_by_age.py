@@ -22,6 +22,13 @@ def view():
     st.plotly_chart(generate_contour_figure(z_values), use_container_width=True)
 
 
+def add_common_figure_formatting(fig: go.Figure) -> go.Figure:
+    fig.update_traces(
+        hovertemplate="""Age: %{x}<br>Percentile %{y}<br>Income: %{z}""",
+    )
+    return fig
+
+
 def generate_surface_figure(z_values) -> go.Figure:
     fig = go.Figure(
         data=[
@@ -36,11 +43,14 @@ def generate_surface_figure(z_values) -> go.Figure:
         ]
     )
     fig.update_layout(
-        title="Income by Income Percentile and Age",
+        title="Income by Income Percentile and Age - Surface",
+        scene=dict(
+            xaxis_title="Age",
+            yaxis_title="Percentile",
+            zaxis_title="Income (USD)"
+        )
     )
-    fig.update_traces(
-        hovertemplate="""Age: %{x}<br>Percentile %{y}<br>Income: %{z}""",
-    )
+    fig = add_common_figure_formatting(fig)
     return fig
 
 
@@ -50,15 +60,22 @@ def generate_contour_figure(z_values) -> go.Figure:
             go.Contour(
                 z=z_values,
                 colorscale='ice_r',
+                contours=dict(
+                    showlabels=True,  # show labels on contours
+                    labelfont=dict(  # label font properties
+                        size=8,
+                        color='white',
+                    )
+                ),
             )
         ]
     )
     fig.update_layout(
-        title="Income by Income Percentile and Age",
+        title="Income by Income Percentile and Age - Contour Plot",
+        xaxis_title="Age",
+        yaxis_title="Percentile",
     )
-    fig.update_traces(
-        hovertemplate="""Age: %{x}<br>Percentile %{y}<br>Income: %{z}""",
-    )
+    fig = add_common_figure_formatting(fig)
     return fig
 
 
