@@ -14,3 +14,10 @@ def write_welcome_header():
         " useful."
     )
     st.markdown(" --- ")
+
+
+def preface_with_welcome_header(f):
+    def welcome_prefacer():
+        write_welcome_header()
+        f()
+    return welcome_prefacer
