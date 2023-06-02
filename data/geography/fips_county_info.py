@@ -5,7 +5,7 @@ import pandas as pd
 
 from pathlib import Path
 
-from .data_source import DataSource
+from data.data_source.data_source import DataSource
 
 
 class FipsCountyInfo(DataSource):

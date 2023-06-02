@@ -1,4 +1,4 @@
-from .json_source import JSONDataSource
+from data.data_source.json_source import JSONDataSource
 
 
 class StateGeoJSON(JSONDataSource):

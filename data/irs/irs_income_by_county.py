@@ -1,4 +1,4 @@
-from .irs_income_by_group import IRSIncomeByGroup
+from data.irs.irs_income_by_group import IRSIncomeByGroup
 
 
 class IRSIncomeByCounty(IRSIncomeByGroup):

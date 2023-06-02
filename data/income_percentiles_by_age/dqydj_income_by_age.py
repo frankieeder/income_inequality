@@ -1,7 +1,7 @@
 from pathlib import Path
 import pandas as pd
 
-from data.data_source import DataSource
+from data.data_source.data_source import DataSource
 
 
 class DQYDJIncomeByAge(DataSource):
