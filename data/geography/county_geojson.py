@@ -1,7 +1,7 @@
 from urllib.request import urlopen
 import json
 
-from .data_source import DataSource
+from data.data_source.data_source import DataSource
 
 
 class CountyGeoJSON(DataSource):

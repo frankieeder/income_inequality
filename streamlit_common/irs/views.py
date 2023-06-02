@@ -1,9 +1,8 @@
 import streamlit as st
 import plotly.express as px
-import plotly.graph_objects as go
-from data import IRSIncomeByCounty
-from data import IRSIncomeByZip
-from data import IRSIncome
+from data.irs.irs_income_by_county import IRSIncomeByCounty
+from data.irs.irs_income_by_zip import IRSIncomeByZip
+from data.irs.irs_income import IRSIncome
 from . import data as streamlit_data
 
 STATE_COLS = ["STATEFIPS", "STATE", "state_name"]

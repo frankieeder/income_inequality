@@ -1,8 +1,8 @@
 import pandas as pd
 
-from .data_source import DataSource
-from .zip_to_fips import ZipToFips
-from .fips_county_info import FipsCountyInfo
+from data.data_source.data_source import DataSource
+from data.geography.zip_to_fips import ZipToFips
+from data.geography.fips_county_info import FipsCountyInfo
 
 
 class IRSIncome(DataSource):

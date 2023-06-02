@@ -1,7 +1,7 @@
 import pandas as pd
 
-from .data_source import DataSource
-from .irs_income import IRSIncome
+from data.data_source.data_source import DataSource
+from data.irs.irs_income import IRSIncome
 
 
 class IRSIncomeByGroup(DataSource):
