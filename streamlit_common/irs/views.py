@@ -72,6 +72,8 @@ def zip_info():
     zipcode_data = income_df[income_df["zipcode"] == zip_code]
     if len(zipcode_data):
         fig = px.bar(zipcode_data, x="agi_stub_desc", y="N1")
+        fig.update_xaxes(title="Adjusted Gross Income Bracket (AGI Stub)")
+        fig.update_yaxes(title="Number of Returns")
         st.plotly_chart(fig, use_container_width=True)
     else:
         st.write(f"Zip code {zip_code} not found")
