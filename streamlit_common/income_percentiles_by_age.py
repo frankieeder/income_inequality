@@ -3,6 +3,7 @@ import numpy as np
 import statsmodels.api as sm
 
 import plotly.graph_objs as go
+import plotly.express as px
 
 from data.income_percentiles_by_age.dqydj_income_by_age import DQYDJIncomeByAge
 
@@ -19,6 +20,8 @@ def view():
         "Data from [DQYDJ](https://dqydj.com/income-percentile-by-age-calculator/)"
     )
     df = get_dqydj_income_by_age()
+
+    st.markdown('## Income Surface')
     z_values = df.values
     smooth = st.checkbox(
         "Smooth raw data",
@@ -27,12 +30,44 @@ def view():
     )
     if smooth:
         z_values = smooth_matrix_along_rows_lowess(z_values)
-
-    left, right = st.columns(2)
-    with left:
+    top_left, top_right = st.columns(2)
+    with top_left:
         st.plotly_chart(generate_surface_figure(z_values), use_container_width=True)
-    with right:
+    with top_right:
         st.plotly_chart(generate_contour_figure(z_values), use_container_width=True)
+
+    st.markdown("## Isolate Age / Percentile")
+
+    bottom_left, bottom_right = st.columns(2)
+    with bottom_left:
+        age = st.selectbox(
+            label="Age",
+            options=df.columns,
+            index=list(df.columns).index('30'),
+        )
+        st.plotly_chart(generate_age_plot(df[age]), use_container_width=True)
+    with bottom_right:
+        percentile = st.selectbox(
+            label="Percentile",
+            options=df.index,
+            index=list(df.index.values).index(0.99),
+        )
+        st.plotly_chart(generate_percentile_plot(df.loc[percentile]), use_container_width=True)
+
+
+def generate_age_plot(series):
+    fig = px.line(
+        series,
+    )
+    return fig
+
+
+def generate_percentile_plot(series):
+    fig = px.scatter(
+        series,
+        trendline='lowess'
+    )
+    return fig
 
 
 def add_common_figure_formatting(fig: go.Figure) -> go.Figure:
