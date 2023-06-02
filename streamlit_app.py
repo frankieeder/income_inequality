@@ -13,7 +13,9 @@ page_names_to_funcs = {
     "IRS Metrics by Zip": irs_views.zip_info,
     "BETA - IRS Metrics Geographic Deep Dive": irs_views.deep_dive,
 }
-page_names_to_funcs = {k: preface_with_welcome_header(v) for k, v in page_names_to_funcs.items()}
+page_names_to_funcs = {
+    k: preface_with_welcome_header(v) for k, v in page_names_to_funcs.items()
+}
 
 selected_page = st.sidebar.selectbox("Select a page", page_names_to_funcs.keys())
 page_names_to_funcs[selected_page]()
