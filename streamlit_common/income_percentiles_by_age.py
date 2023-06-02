@@ -5,7 +5,12 @@ import statsmodels.api as sm
 import plotly.graph_objs as go
 import plotly.express as px
 
-from . import data as streamlit_data
+from data.income_percentiles_by_age.dqydj_income_by_age import DQYDJIncomeByAge
+
+
+@st.experimental_singleton
+def get_dqydj_income_by_age():
+    return DQYDJIncomeByAge().process()
 
 
 def view():
@@ -14,7 +19,7 @@ def view():
     st.write(
         "Data from [DQYDJ](https://dqydj.com/income-percentile-by-age-calculator/)"
     )
-    df = streamlit_data.get_dqydj_income_by_age()
+    df = get_dqydj_income_by_age()
     z_values = df.values
     smooth = st.checkbox("Smooth raw data", value=True)
     if smooth:

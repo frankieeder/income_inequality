@@ -7,7 +7,6 @@ from data import IRSIncomeByZip
 from data import IRSIncome
 from data import ZipToFips
 from data import FipsCountyInfo
-from data import DQYDJIncomeByAge
 
 
 @st.experimental_singleton
@@ -43,11 +42,6 @@ def get_state_geo_json():
 @st.experimental_singleton
 def get_county_geo_json():
     return CountyGeoJSON().process()
-
-
-@st.experimental_singleton
-def get_dqydj_income_by_age():
-    return DQYDJIncomeByAge().process()
 
 
 @st.experimental_singleton

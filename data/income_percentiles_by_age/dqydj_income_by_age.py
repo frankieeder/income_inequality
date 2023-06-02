@@ -1,7 +1,7 @@
 from pathlib import Path
 import pandas as pd
 
-from .data_source import DataSource
+from data.data_source import DataSource
 
 
 class DQYDJIncomeByAge(DataSource):
@@ -11,7 +11,7 @@ class DQYDJIncomeByAge(DataSource):
     # Then reading the js gave me the below link:
     REMOTE_URL = "https://dqydj.com/scripts/cps/2022_income_calculators/cps_2022_income_by_age.csv"
     LOCAL_FILE_DIR = (
-        Path(__file__).parent.resolve() / "local_files" / "cps_2022_income_by_age.csv"
+        Path(__file__).parent.parent.resolve() / "local_files" / "cps_2022_income_by_age.csv"
     )
 
     def source(self):
