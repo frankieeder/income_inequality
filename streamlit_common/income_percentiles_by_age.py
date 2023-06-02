@@ -25,7 +25,7 @@ def view():
     smooth = st.checkbox(
         "Smooth raw data",
         value=True,
-        help="Apples trend line smoothing (LOWESS) across each percentile to filter noisy portions of dataset"
+        help="Apples trend line smoothing (LOWESS) across each percentile to filter noisy portions of dataset",
     )
     if smooth:
         z_values = smooth_matrix_along_rows_lowess(z_values)
