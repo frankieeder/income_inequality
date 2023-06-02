@@ -16,16 +16,17 @@ def view():
     z_values = df.values
     smooth = st.checkbox("Smooth raw data", value=True)
     if smooth:
-        z_values = smooth_matrix_along_rows_lowess
+        z_values = smooth_matrix_along_rows_lowess(z_values)
 
     st.plotly_chart(generate_surface_figure(z_values), use_container_width=True)
+    st.plotly_chart(generate_contour_figure(z_values), use_container_width=True)
 
 
 def generate_surface_figure(z_values) -> go.Figure:
     fig = go.Figure(
         data=[
             go.Surface(
-                z=smooth_matrix_along_rows_lowess(df.values),
+                z=z_values,
                 colorscale='ice_r',
                 #             contours = {
                 #                 #"y": {"show": True, "size": 0.01, "color":"black"},
@@ -40,7 +41,25 @@ def generate_surface_figure(z_values) -> go.Figure:
     fig.update_traces(
         hovertemplate="""Age: %{x}<br>Percentile %{y}<br>Income: %{z}""",
     )
+    return fig
 
+
+def generate_contour_figure(z_values) -> go.Figure:
+    fig = go.Figure(
+        data=[
+            go.Contour(
+                z=z_values,
+                colorscale='ice_r',
+            )
+        ]
+    )
+    fig.update_layout(
+        title="Income by Income Percentile and Age",
+    )
+    fig.update_traces(
+        hovertemplate="""Age: %{x}<br>Percentile %{y}<br>Income: %{z}""",
+    )
+    return fig
 
 
 def smooth_matrix_along_rows_lowess(mat, *args, **kwargs):
