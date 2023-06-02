@@ -8,12 +8,12 @@ class IRSIncomeByGroup(DataSource):
     AGI_STUB_RANGE = range(1, 7)
     CALCULATED_METRICS = {
         **{
-            f"agi_stub_{i}_N1": f"Number of Tax Returns in Tax Bracket (AGI Stub) {i}"
+            f"agi_stub_{i}_N1": f"Number of Tax Returns w/ AGI in Range {IRSIncome.AGI_STUB_DESCRIPTION[i]}"
             for i in AGI_STUB_RANGE
         },
         **{
             f"agi_stub_{i}_prop_N1": (
-                f"Proportion of Tax Returns in Tax Bracket (AGI Stub) {i}"
+                f"Proportion of Tax Returns w/ AGI in Range {IRSIncome.AGI_STUB_DESCRIPTION[i]}"
             )
             for i in AGI_STUB_RANGE
         },
