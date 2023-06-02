@@ -7,10 +7,10 @@ from streamlit_common import income_percentiles_by_age
 
 page_names_to_funcs = {
     "Income Percentiles by Age": income_percentiles_by_age.view,
-    "Metrics mapped by County": irs_views.county_map,
+    "IRS Metrics mapped by County": irs_views.county_map,
     # "Metrics mapped by Zip in County": views.zip_map,
-    "Metrics by Zip": irs_views.zip_info,
-    "BETA - Geographic Deep Dive": irs_views.deep_dive,
+    "IRS Metrics by Zip": irs_views.zip_info,
+    "BETA - IRS Metrics Geographic Deep Dive": irs_views.deep_dive,
 }
 
 selected_page = st.sidebar.selectbox("Select a page", page_names_to_funcs.keys())
