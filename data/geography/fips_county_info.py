@@ -10,7 +10,7 @@ from data.data_source.data_source import DataSource
 
 class FipsCountyInfo(DataSource):
     LOCAL_FILE_DIR = (
-        Path(__file__).parent.resolve() / "local_files" / "fips_county_info.csv"
+        Path(__file__).parent.parent.resolve() / "local_files" / "fips_county_info.csv"
     )
 
     def __init__(self, get_remote=False):

@@ -6,7 +6,7 @@ from data.data_source.data_source import DataSource
 
 class ZipToFips(DataSource):
     LOCAL_FILE_DIR = (
-        Path(__file__).parent.resolve() / "local_files" / "ZIP_COUNTY_122021.xlsx"
+        Path(__file__).parent.parent.resolve() / "local_files" / "ZIP_COUNTY_122021.xlsx"
     )
 
     def source(self):

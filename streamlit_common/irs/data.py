@@ -1,12 +1,12 @@
 import streamlit as st
-from data import StateGeoJSON
-from data import CountyGeoJSON
-from data import ZipGeoJSON
-from data import IRSIncomeByCounty
-from data import IRSIncomeByZip
-from data import IRSIncome
-from data import ZipToFips
-from data import FipsCountyInfo
+from data.geography.state_geojson import StateGeoJSON
+from data.geography.county_geojson import CountyGeoJSON
+from data.geography.zip_geojson import ZipGeoJSON
+from data.geography.zip_to_fips import ZipToFips
+from data.geography.fips_county_info import FipsCountyInfo
+from data.irs.irs_income_by_county import IRSIncomeByCounty
+from data.irs.irs_income_by_zip import IRSIncomeByZip
+from data.irs.irs_income import IRSIncome
 
 
 @st.experimental_singleton
