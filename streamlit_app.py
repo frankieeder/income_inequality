@@ -1,14 +1,15 @@
 import streamlit as st
 
-from streamlit_common import views
-
 st.set_page_config(page_title="Income by Geo - US IRS", page_icon="📈", layout='wide')
+
+from streamlit_common import views
+from streamlit_common import income_percentiles_by_age
 
 page_names_to_funcs = {
     "Metrics mapped by County": views.county_map,
     # "Metrics mapped by Zip in County": views.zip_map,
     "Metrics by Zip": views.zip_info,
-    "Income by Age": views.income_by_age,
+    "Income by Age": income_percentiles_by_age.view,
     "BETA - Geographic Deep Dive": views.deep_dive,
 }
 
