@@ -5,7 +5,7 @@ from .data_source import DataSource
 
 
 class DQYDJIncomeByAge(DataSource):
-    # https://dqydj.com/income-percentile-by-age-calculator/#Average_Median_and_Selected_Income_Percentiles_for_Ages_25-65
+    # https://dqydj.com/income-percentile-by-age-calculator/
     # Inspecting scripts led here
     # https://dqydj.com/scripts/cps/2022_income_calculators/2022_income_by_age.html
     # Then reading the js gave me the below link:
