@@ -36,7 +36,7 @@ def view():
     with top_right:
         st.plotly_chart(generate_contour_figure(z_values), use_container_width=True)
 
-    st.markdown("## Isolate Age / Percentile")
+    st.markdown("## Isolate Age(s) & Percentile(s)")
 
     bottom_left, bottom_right = st.columns(2)
     with bottom_left:
