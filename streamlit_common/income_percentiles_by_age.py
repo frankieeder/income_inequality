@@ -18,6 +18,10 @@ def view():
     if smooth:
         z_values = smooth_matrix_along_rows_lowess
 
+    st.plotly_chart(generate_surface_figure(z_values), use_container_width=True)
+
+
+def generate_surface_figure(z_values) -> go.Figure:
     fig = go.Figure(
         data=[
             go.Surface(
@@ -36,7 +40,7 @@ def view():
     fig.update_traces(
         hovertemplate="""Age: %{x}<br>Percentile %{y}<br>Income: %{z}""",
     )
-    st.plotly_chart(fig, use_container_width=True)
+
 
 
 def smooth_matrix_along_rows_lowess(mat, *args, **kwargs):
