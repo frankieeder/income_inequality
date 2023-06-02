@@ -5,7 +5,7 @@ from .data_source import DataSource
 
 
 class JSONDataSource(DataSource):
-    URL = ''
+    URL = ""
 
     def source(self):
         with urlopen(self.URL) as response:

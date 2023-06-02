@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.set_page_config(page_title="Income by Geo - US IRS", page_icon="📈", layout='wide')
+st.set_page_config(page_title="Income by Geo - US IRS", page_icon="📈", layout="wide")
 
 from streamlit_common import views
 from streamlit_common import income_percentiles_by_age
