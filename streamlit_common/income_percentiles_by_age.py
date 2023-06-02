@@ -63,7 +63,14 @@ def generate_age_plot(df, ages):
         )
         fig.update_traces(line_color=px.colors.sequential.ice_r[i])
         data += fig.data
-    return go.Figure(data)
+    full_fig = go.Figure(data)
+    full_fig.update_layout(
+        legend_title_text='Age',
+        title_text='Income Percentiles Across Ages',
+        xaxis_title_text='Percentile',
+        yaxis_title_text='Income',
+    )
+    return full_fig
 
 
 def generate_percentile_plot(df, percentiles):
@@ -75,7 +82,14 @@ def generate_percentile_plot(df, percentiles):
         )
         fig.update_traces(line_color=px.colors.sequential.ice_r[i])
         data += fig.data
-    return go.Figure(data)
+    full_fig = go.Figure(data)
+    full_fig.update_layout(
+        legend_title_text='Percentile',
+        title_text='Income/Age Curve Across Percentiles',
+        xaxis_title_text='Age',
+        yaxis_title_text='Income',
+    )
+    return full_fig
 
 
 def add_common_figure_formatting(fig: go.Figure) -> go.Figure:
